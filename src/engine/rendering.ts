@@ -23,13 +23,13 @@ export class RenderingManager {
         this.canvasBackground.name = 'Scene Background' // For PIXI Devtools
 
         this.loadingDarkOverlay = Sprite.from(
-            createColorTexture(this.app, new Rectangle(0, 0, this.app.view.width, this.app.view.height), 0x000000, 0.5)
+            createColorTexture(this.app, new Rectangle(0, 0, this.app.view.width, this.app.view.height), 0x000000, 0.2)
         )
         this.loadingText = new Text(
-            'Loading..',
+            'Loading...',
             new TextStyle({
                 fontFamily: 'Arial',
-                fontSize: 36,
+                fontSize: 30,
                 fontWeight: 'bold',
                 fill: '#ffffff',
                 stroke: '#000000',
@@ -44,9 +44,9 @@ export class RenderingManager {
                 lineJoin: 'round',
             })
         )
-        this.loadingText.x = this.app.view.width / 2
-        this.loadingText.y = this.app.view.height / 2
-        this.loadingText.anchor.set(0.5, 0.5)
+        this.loadingText.x = this.app.view.width - 24
+        this.loadingText.y = this.app.view.height - 6
+        this.loadingText.anchor.set(1, 1)
     }
 
     init() {
