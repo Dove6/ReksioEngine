@@ -20,7 +20,7 @@
             }
 
             .notready:before {
-                content: 'Press here to start';
+                content: 'Click to begin';
                 font-family: sans-serif;
                 font-size: 24px;
             }
@@ -32,23 +32,24 @@
 
             #controls {
                 position: absolute;
-                top: 0;
+                top: 550px;
                 left: 0;
                 padding: 10px;
-                opacity: 0.4;
+                opacity: 0.8;
             }
 
-            #controls:hover {
-                opacity: 0.8;
+            #enterFullscreen {
+                width: 30px;
+                height: 30px;
+                background-image: url('https://itch.io/static/images/enlarge.svg?1753402899');
+                background-size: contain;
             }
         </style>
     </head>
     <body>
         <div id="game"></div>
         <div id="controls">
-            <button title="Enter fullscreen" id="enterFullscreen">
-                <img width="30" height="30" src="https://itch.io/static/images/enlarge.svg?1753402899" />
-            </button>
+            <button title="Enter fullscreen" id="enterFullscreen"></button>
         </div>
     </body>
 </html>
