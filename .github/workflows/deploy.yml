@@ -1,37 +1,37 @@
-name: Deploy to GitHub Pages
+name: Deploy to itch.io
 
 on:
-    push:
-        branches:
-            - master
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
-        permissions:
-            contents: write
-        concurrency:
-            group: ${{ github.workflow }}-${{ github.ref }}
-        steps:
-            - uses: actions/checkout@v3
-
-            - name: Setup Node
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '18'
-
-            - name: Persist npm cache
-              uses: actions/cache@v3
-              with:
-                  path: ~/.npm
-                  key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
-
-            - run: npm install
-            - run: npm run build -- --mode development --env debug
-
-            - name: Deploy
-              uses: peaceiris/actions-gh-pages@v3
-              if: github.ref == 'refs/heads/master'
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  publish_dir: ./dist
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Persist npm cache
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+      - run: npm install
+      - run: npm run build
+      - name: Setup butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+      - name: Deploy
+        if: github.ref == 'refs/heads/master'
+        env:
+          BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        run: ./butler push ./dist "${{ vars.ITCH_USERNAME }}/${{ vars.ITCH_GAME_ID }}:html"

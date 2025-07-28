@@ -2,9 +2,13 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <title>Reksio Engine</title>
-
+        <title>[PRGJ 2025] Test name - Powered by Reksio Engine</title>
         <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+
             .notready {
                 width: 800px;
                 height: 600px;
@@ -25,13 +29,26 @@
                 display: flex;
                 justify-content: center;
             }
+
+            #controls {
+                position: absolute;
+                top: 0;
+                left: 0;
+                padding: 10px;
+                opacity: 0.4;
+            }
+
+            #controls:hover {
+                opacity: 0.8;
+            }
         </style>
     </head>
     <body>
         <div id="game"></div>
         <div id="controls">
-            <button id="enterFullscreen">Fullscreen</button>
+            <button title="Enter fullscreen" id="enterFullscreen">
+                <img width="30" height="30" src="https://itch.io/static/images/enlarge.svg?1753402899" />
+            </button>
         </div>
-        <div id="debug"></div>
     </body>
 </html>
