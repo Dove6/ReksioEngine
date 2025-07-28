@@ -51,10 +51,13 @@ export class GithubFileLoader extends UrlFileLoader {
     private readonly filesListUrl
     private readonly filesBaseUrl
 
-    constructor(gameName: string) {
+    constructor(organizationName?: string, repositoryName?: string, branchName?: string) {
         super()
-        this.filesListUrl = `https://api.github.com/repos/ReksioEngine/GamesFiles/git/trees/${gameName}?recursive=1/`
-        this.filesBaseUrl = `https://raw.githubusercontent.com/ReksioEngine/GamesFiles/${gameName}/`
+        organizationName ??= 'ReksioEngine';
+        repositoryName ??= 'GamesFiles';
+        branchName ??= 'main';
+        this.filesListUrl = `https://api.github.com/repos/${organizationName}/${repositoryName}/git/trees/${branchName}?recursive=1/`
+        this.filesBaseUrl = `https://raw.githubusercontent.com/${organizationName}/${repositoryName}/${branchName}/`
     }
 
     // Windows case-insensitive filenames moment

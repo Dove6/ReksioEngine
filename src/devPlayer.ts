@@ -58,7 +58,7 @@ if (urlParams.get('loader') === 'iso-local') {
         const source = urlParams.get('source')
         if (loader && source) {
             if (loader === 'github') {
-                return new GithubFileLoader(source)
+                return new GithubFileLoader(undefined, undefined, source)
             } else if (loader === 'archiveorg') {
                 return new ArchiveOrgFileLoader(source)
             } else if (loader === 'listingjson') {
@@ -67,7 +67,7 @@ if (urlParams.get('loader') === 'iso-local') {
                 return new RemoteIsoFileLoader(source)
             }
         }
-        return new ListingJSONUrlFileLoader('https://iso.zagrajwreksia.pl/game-assets/reksioiskarbpiratow/listing.json')
+        return new GithubFileLoader('Dove6', 'piklib-test-scene')
     }
 
     config = {
