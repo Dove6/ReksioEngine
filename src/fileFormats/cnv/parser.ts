@@ -16,6 +16,14 @@ const splitOnce = (text: string, separator: string) => {
 
 export const parseCNV = (content: string) => {
     const lines = content.split('\n')
+    for (let i = 0; i < lines.length; i++) {
+        while (lines[i].indexOf('/') > -1) {
+            lines[i] = lines[i].replaceAll('/', '')
+            if (lines.length > i + 1) {
+                lines[i] = `${lines[i]}${lines.splice(i + 1, 1)}`
+            }
+        }
+    }
     const objects: CNV = {}
 
     for (const line of lines) {
