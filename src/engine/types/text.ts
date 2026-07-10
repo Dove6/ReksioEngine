@@ -16,6 +16,7 @@ export class Text extends Type<TextDefinition> {
 
         this.text = new BitmapText(this.definition.TEXT ?? '', {
             fontName: font.bitmapFont.font,
+            fontSize: font.fontSize ?? undefined,
         })
 
         const [x1, y1, x2, y2] = this.definition.RECT

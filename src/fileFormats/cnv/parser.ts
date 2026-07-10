@@ -97,7 +97,7 @@ export const parseCNV = (content: string) => {
                     const cleanedValue = value.trim()
                     const processedValue = fieldTypeDefinition.processor(object, fieldName, param, cleanedValue)
                     if (processedValue !== undefined) {
-                        object[fieldName] = processedValue
+                        object[variableName] = processedValue
                     }
                 } catch (err) {
                     if (err instanceof FieldProcessorRecoverableError) {
