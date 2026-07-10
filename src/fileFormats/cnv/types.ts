@@ -483,7 +483,8 @@ const SystemDefinitionStructure = {}
 
 export type TextDefinition = TypeDefinition & {
     VISIBLE: boolean
-    VJUSTIFY?: boolean
+    HJUSTIFY?: 'LEFT' | 'RIGHT' | 'CENTER'
+    VJUSTIFY?: 'TOP' | 'BOTTOM' | 'CENTER'
     TOCANVAS: boolean
     TEXT?: string
     RECT: Array<number>

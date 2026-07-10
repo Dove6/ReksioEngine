@@ -22,6 +22,18 @@ export class Text extends Type<TextDefinition> {
         this.text.x = x1
         this.text.y = y1
         this.text.anchor.set(0.5, 0)
+        if (this.definition.HJUSTIFY === 'CENTER') {
+            this.text.align = 'center'
+        } else if (this.definition.HJUSTIFY === 'RIGHT') {
+            this.text.align = 'right'
+        }
+        if (this.definition.HJUSTIFY === 'CENTER') {
+            this.text.anchor.set(0.5, 0.5)
+            this.text.y = Math.round((y1 + y2) / 2)
+        } else if (this.definition.VJUSTIFY === 'BOTTOM') {
+            this.text.anchor.set(0.5, 1)
+            this.text.y = Math.round(y2)
+        }
         this.text.visible = this.definition.VISIBLE
         this.engine.rendering.addToStage(this.text)
     }
@@ -37,9 +49,30 @@ export class Text extends Type<TextDefinition> {
     }
 
     @method()
+    SETCOLOR(r: number, g: number, b: number) {
+        if (this.text) {
+            this.text.tint = { r, g, b }
+        }
+    }
+
+    @method()
     SETTEXT(content: string) {
         if (this.text) {
             this.text.text = content
+        }
+    }
+
+    @method()
+    HIDE() {
+        if (this.text) {
+            this.text.visible = false
+        }
+    }
+
+    @method()
+    SHOW() {
+        if (this.text) {
+            this.text.visible = true
         }
     }
 }
