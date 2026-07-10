@@ -97,7 +97,7 @@ export const parseFont = (data: ArrayBuffer, details: FontDefinitionDetails) => 
     ]
     fontData.common = [
         {
-            lineHeight: header.charHeight,
+            lineHeight: Math.max(header.charHeight - 4, 0),
         },
     ]
     fontData.distanceField = []
