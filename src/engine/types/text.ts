@@ -22,9 +22,7 @@ export class Text extends Type<TextDefinition> {
         const [x1, y1, x2, y2] = this.definition.RECT
         this.text.x = x1
         this.text.y = y1
-        this.text.width = x2 - x1
-        this.text.height = y2 - y1
-        this.text.maxWidth = this.text.width
+        this.text.maxWidth = x2 - x1
         this.text.anchor.set(0, 0)
 
         if (this.definition.HJUSTIFY === 'CENTER') {
