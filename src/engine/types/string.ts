@@ -41,6 +41,11 @@ export class String extends ValueType<StringDefinition, string> {
     }
 
     @method()
+    REPLACE(needle: string, value: string) {
+        this.value.replaceAll(needle, value)
+    }
+
+    @method()
     LENGTH() {
         return this.value.length
     }
