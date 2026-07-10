@@ -224,12 +224,14 @@ export type DoubleDefinition = TypeDefinition & {
     VALUE?: string
     DEFAULT?: number
     TOINI?: boolean
+    ONINIT?: callback
 }
 
 const DoubleStructure = {
     VALUE: optional(number),
     DEFAULT: optional(number),
     TOINI: optional(boolean),
+    ONINIT: optional(callback),
 }
 
 export type EpisodeDefinition = TypeDefinition & {
@@ -515,7 +517,7 @@ const TextDefinitionStructure = {
 
 export type TimerDefinition = TypeDefinition & {
     ENABLED?: boolean
-    ELAPSE: number
+    ELAPSE: number | reference
     TICKS?: number
     ONINIT?: callback
     ONTICK?: callbacks<number>
@@ -523,7 +525,17 @@ export type TimerDefinition = TypeDefinition & {
 
 const TimerStructure = {
     ENABLED: optional(boolean),
-    ELAPSE: number,
+    ELAPSE: {
+        name: 'elapse',
+        processor: (object: any, key: string, param: string, value: string) => {
+            const result = Number(value.startsWith('"') ? value.slice(1, -1) : value)
+            if (!isNaN(result)) {
+                return result
+            } else {
+                return reference.processor(object, key, param, value)
+            }
+        },
+    },
     TICKS: optional(number),
     ONINIT: optional(callback),
     ONTICK: optional(callbacks(number)),
