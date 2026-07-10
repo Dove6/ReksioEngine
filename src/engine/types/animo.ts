@@ -312,10 +312,10 @@ export class Animo extends DisplayType<AnimoDefinition> {
 
         this.positionOffsetX = annImage.positionX + eventFrame.positionX
         this.positionOffsetY = annImage.positionY + eventFrame.positionY
-        this.syncPosition()
 
         this.sprite.width = annImage.width
         this.sprite.height = annImage.height
+        this.syncPosition()
 
         if (this.buttonInteractArea !== null) {
             this.buttonInteractArea.hitArea = this.sprite.getBounds()
@@ -343,10 +343,10 @@ export class Animo extends DisplayType<AnimoDefinition> {
 
         this.positionOffsetX = annImage.positionX
         this.positionOffsetY = annImage.positionY
-        this.syncPosition()
 
         this.sprite.width = annImage.width
         this.sprite.height = annImage.height
+        this.syncPosition()
 
         if (this.buttonInteractArea !== null) {
             this.buttonInteractArea.hitArea = this.sprite.getBounds()
@@ -384,6 +384,7 @@ export class Animo extends DisplayType<AnimoDefinition> {
 
         this.currentFrame = 0
         this.currentEvent = this.getEvent(name)
+        this.syncPosition()
 
         // Animation could be paused before next tick, and it wouldn't render new frame
         // Tick animation so that it's not signaling twice for 0 frame
@@ -568,8 +569,12 @@ export class Animo extends DisplayType<AnimoDefinition> {
     private async onButtonStateChange(prevState: State, event: FSMEvent, newState: State) {
         const playEventIfExists = async (eventName: string) => {
             if (this.hasEvent(eventName)) {
+                if (this.currentEvent?.name === eventName && this.isPlaying)
+                    return;
                 await this.playEvent(eventName)
             } else if (this.hasEvent('PLAY')) {
+                if (this.currentEvent?.name === 'PLAY' && this.isPlaying)
+                    return;
                 await this.playEvent('PLAY')
             }
         }
