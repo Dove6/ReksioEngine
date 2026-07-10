@@ -15,6 +15,11 @@ export class Bool extends ValueType<BoolDefinition, boolean> {
     }
 
     @method()
+    GET(): boolean {
+        return this.value
+    }
+
+    @method()
     async SET(newValue: boolean) {
         await this.setValue(newValue)
     }
