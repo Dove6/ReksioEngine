@@ -6,7 +6,7 @@ import { Compare, ForceNumber, toNumber, valueAsString } from '../common/types'
 import { Rand } from '../engine/types/rand'
 import { System } from '../engine/types/system'
 import { CNVLoader } from '../engine/types/cnvloader'
-import { createCallback } from '../fileFormats/common'
+import { callback, createCallback } from '../fileFormats/common'
 import { Behaviour } from '../engine/types/behaviour'
 import { IgnorableError, IrrecoverableError, NotImplementedError } from '../common/errors'
 import { Integer } from '../engine/types/integer'
@@ -121,8 +121,8 @@ export class Interpreter {
 
     private async handleIf(args: any[]): Promise<void> {
         let result: boolean
-        let onTrue: Behaviour | null
-        let onFalse: Behaviour | null
+        let onTrue: callback | undefined
+        let onFalse: callback | undefined
 
         if (args.length === 5) {
             const [a, operator, b, ifTrue, ifFalse] = args
@@ -135,22 +135,36 @@ export class Interpreter {
             }
 
             result = applyComparison(left, op, right)
-            onTrue = this.getObject(ifTrue)
-            onFalse = this.getObject(ifFalse)
+            onTrue = createCallback(ifTrue)
+            onFalse = createCallback(ifFalse)
         } else if (args.length === 3) {
             const [expression, ifTrue, ifFalse] = args
 
             result = await this.evaluateLogicExpression(parseLogicExpression(expression))
-            onTrue = this.getObject(ifTrue)
-            onFalse = this.getObject(ifFalse)
+            onTrue = createCallback(ifTrue)
+            onFalse = createCallback(ifFalse)
         } else {
             throw new RuntimeError(`Invalid @IF arguments: expected 3 or 5, got ${args.length}`)
         }
 
         if (result && onTrue) {
-            await onTrue.executeConditionalCallback()
+            await this.context.engine.scripting.executeCallback(
+                null,
+                this.context.caller,
+                onTrue,
+                [],
+                undefined,
+                true
+            )
         } else if (!result && onFalse) {
-            await onFalse.executeConditionalCallback()
+            await this.context.engine.scripting.executeCallback(
+                null,
+                this.context.caller,
+                onFalse,
+                [],
+                undefined,
+                true
+            )
         }
     }
 
