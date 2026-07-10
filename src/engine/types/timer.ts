@@ -56,6 +56,11 @@ export class Timer extends Type<TimerDefinition> {
     }
 
     @method()
+    GETTICKS(): number {
+        return this.currentTick
+    }
+
+    @method()
     SETELAPSE(newElapse: number) {
         this.elapse = newElapse
     }
