@@ -3,6 +3,7 @@ import { loadImageWithoutHeader } from '../img'
 import { CompressionType } from '../compression'
 import * as PIXI from 'pixi.js'
 import { BitmapFont, BitmapFontData } from 'pixi.js'
+import { FontDefinitionDetails } from '../cnv/types'
 
 const decoder = new TextDecoder('windows-1250')
 
@@ -35,7 +36,7 @@ const parse = (view: BinaryBuffer) => {
     return font
 }
 
-export const parseFont = (data: ArrayBuffer) => {
+export const parseFont = (data: ArrayBuffer, details: FontDefinitionDetails) => {
     const buffer = new BinaryBuffer(new DataView(data))
     const header = parse(buffer)
 
@@ -90,8 +91,8 @@ export const parseFont = (data: ArrayBuffer) => {
     const fontData = new BitmapFontData()
     fontData.info = [
         {
-            face: crypto.randomUUID(),
-            size: header.charHeight,
+            face: details.family,
+            size: details.size,
         },
     ]
     fontData.common = [
@@ -108,6 +109,21 @@ export const parseFont = (data: ArrayBuffer) => {
     ]
     fontData.char = chars
     fontData.kerning = kerning
+
+    const spaceCode = ' '.charCodeAt(0);
+    if (!chars.find(char => char.id == spaceCode)) {
+        chars.push({
+            id: spaceCode,
+            page: 0,
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0,
+            xoffset: 0,
+            yoffset: 0,
+            xadvance: 6,
+        })
+    }
 
     return BitmapFont.install(fontData, [texture], true)
 }

@@ -7,6 +7,7 @@ import { decryptCNV } from '../fileFormats/cnv'
 import { deserializeArray } from '../fileFormats/archive/array'
 import { FileLoader } from './fileLoader'
 import { FileStorage } from './fileStorage'
+import { FontDefinitionDetails } from '../fileFormats/cnv/types'
 
 export const normalizePath = (path: string) => {
     return path.toLowerCase()
@@ -58,9 +59,9 @@ export default class Filesystem {
         return loadAnn(data)
     }
 
-    async getFNTFile(filename: string) {
+    async getFNTFile(filename: string, details: FontDefinitionDetails) {
         const data = await this.getFile(filename)
-        return parseFont(data)
+        return parseFont(data, details)
     }
 
     async getCNVFile(filename: string) {
