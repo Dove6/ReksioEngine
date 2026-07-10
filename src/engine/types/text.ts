@@ -25,11 +25,13 @@ export class Text extends Type<TextDefinition> {
         this.text.height = y2 - y1
         this.text.maxWidth = this.text.width
         this.text.anchor.set(0, 0)
+
         if (this.definition.HJUSTIFY === 'CENTER') {
             this.text.align = 'center'
         } else if (this.definition.HJUSTIFY === 'RIGHT') {
             this.text.align = 'right'
         }
+
         if (this.definition.HJUSTIFY === 'CENTER') {
             this.text.anchor.set(0, 0.5)
             this.text.y = Math.round((y1 + y2) / 2)
@@ -37,7 +39,9 @@ export class Text extends Type<TextDefinition> {
             this.text.anchor.set(0, 1)
             this.text.y = Math.round(y2)
         }
+
         this.text.visible = this.definition.VISIBLE
+        this.text.zIndex = this.definition.PRIORITY ?? this.text.zIndex
         this.engine.rendering.addToStage(this.text)
     }
 
