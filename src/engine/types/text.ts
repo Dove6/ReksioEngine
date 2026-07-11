@@ -64,7 +64,7 @@ export class Text extends Type<TextDefinition> {
     @method()
     SETTEXT(content: string) {
         if (this.text) {
-            this.text.text = content
+            this.text.text = content.replaceAll('|', '\n')
         }
     }
 
