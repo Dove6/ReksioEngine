@@ -42,7 +42,7 @@ export class String extends ValueType<StringDefinition, string> {
 
     @method()
     REPLACE(needle: string, value: string) {
-        this.value.replaceAll(needle, value)
+        this.value = this.value.replaceAll(needle, value)
     }
 
     @method()
