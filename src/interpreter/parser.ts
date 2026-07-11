@@ -194,6 +194,7 @@ export function parseParameters(text: string, offset = 0): Parameter[] {
  *   1. `[expr]`              -> BracketExpression (parsed as flat Expression)
  *   2. `CONV...`             -> ConversionCall
  *   3. has `^`, no `"`       -> nested FunctionCall (recursive runLine)
+ *      or starts with `@`
  *   4. starts with `"`       -> StringLiteral
  *   5. starts with `-`/digit -> NumberLiteral
  *   6. contains `|`          -> FieldAccess
@@ -234,10 +235,12 @@ export function parseParameter(text: string, offset = 0): Parameter {
     }
 
     // 3. contains '^' and does NOT start with '"' -> nested call
-    if (text.includes('^') && first !== '"') {
+    //    or starts with '@'
+    if (first === '@' || (text.includes('^') && first !== '"')) {
         return parseLine(text, trimOffset)
     }
 
+    // 4. starts with `"` -> StringLiteral
     if (first === '"') {
         let value = text.slice(1)
         if (value.endsWith('"')) value = value.slice(0, -1)
@@ -249,6 +252,7 @@ export function parseParameter(text: string, offset = 0): Parameter {
         }
     }
 
+    // 5. starts with `-`/digit -> NumberLiteral
     if (first === '-' || (first >= '0' && first <= '9')) {
         return {
             type: 'NumberLiteral',
@@ -258,6 +262,7 @@ export function parseParameter(text: string, offset = 0): Parameter {
         }
     }
 
+    // 6. contains `|` -> FieldAccess
     const pipe = text.indexOf('|')
     if (pipe !== -1) {
         return {
@@ -269,6 +274,7 @@ export function parseParameter(text: string, offset = 0): Parameter {
         }
     }
 
+    // 6.5. BooleanLiteral
     if (text === 'TRUE' || text === 'FALSE') {
         return {
             type: 'BooleanLiteral',
@@ -278,6 +284,7 @@ export function parseParameter(text: string, offset = 0): Parameter {
         }
     }
 
+    // 7. fallback -> Identifier
     return {
         type: 'Identifier',
         name: text,
