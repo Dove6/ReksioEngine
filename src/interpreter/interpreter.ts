@@ -116,6 +116,7 @@ export class Interpreter {
             ['BREAK', this.handleBreak.bind(this)],
             ['LOOP', this.handleLoop.bind(this)],
             ['WHILE', this.handleWhile.bind(this)],
+            ['GETCURRENTSCENE', this.handleGetCurrentScene.bind(this)],
         ])
     }
 
@@ -245,6 +246,10 @@ export class Interpreter {
                 throw err
             }
         }
+    }
+
+    private async handleGetCurrentScene(_args: any[]): Promise<string> {
+        return this.context.engine.currentScene?.name ?? ''
     }
 
     private async evaluateLogicExpression(expr: ConditionExpr): Promise<boolean> {
