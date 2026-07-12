@@ -80,4 +80,21 @@ export class Double extends ValueType<DoubleDefinition, number> {
     GET() {
         return this.value
     }
+
+    @method()
+    CLAMP(min: number, max: number) {
+        this.value = Math.max(Math.min(this.value, max), min)
+        return this.value
+    }
+
+    @method()
+    ROUND() {
+        return Math.round(this.value)
+    }
+
+    @method()
+    POWER(power: number) {
+        this.value = Math.pow(this.value, power)
+        return this.value
+    }
 }
