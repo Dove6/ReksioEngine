@@ -4,12 +4,14 @@ import { FederatedPointerEvent, Point } from 'pixi.js'
 import { NotImplementedError } from '../../common/errors'
 import { method } from '../../common/types'
 
+type MouseKey = 'LEFT' | 'MIDDLE' | 'RIGHT'
+
 type MouseEvent = {
-    type: string
-    key: string
+    type: 'click' | 'dblclick' | 'release'
+    key: MouseKey
 }
 
-const keysMapping = new Map([
+const keysMapping = new Map<number, MouseKey>([
     [0, 'LEFT'],
     [1, 'MIDDLE'],
     [2, 'RIGHT'],
@@ -24,6 +26,11 @@ export class Mouse extends Type<MouseDefinition> {
     private lastClicksTime: Record<string, number> = {}
 
     private mousePosition: Point = new Point(0, 0)
+    private isPressed: Record<MouseKey, boolean> = {
+        'LEFT': false,
+        'MIDDLE': false,
+        'RIGHT': false,
+    }
     private moved = false
     private signalsDisabled: boolean = false
 
@@ -80,12 +87,8 @@ export class Mouse extends Type<MouseDefinition> {
         this.mouseReleaseListener = this.onMouseRelease.bind(this)
 
         this.engine.app.stage.addListener('pointermove', this.mouseMoveListener)
-        if (this.callbacks.has('ONCLICK') || this.callbacks.has('ONDBLCLICK')) {
-            this.engine.app.stage.addListener('pointerdown', this.mouseClickListener)
-        }
-        if (this.callbacks.has('ONRELEASE')) {
-            this.engine.app.stage.addListener('pointerup', this.mouseReleaseListener)
-        }
+        this.engine.app.stage.addListener('pointerdown', this.mouseClickListener)
+        this.engine.app.stage.addListener('pointerup', this.mouseReleaseListener)
     }
 
     @method()
@@ -130,6 +133,16 @@ export class Mouse extends Type<MouseDefinition> {
     }
 
     @method()
+    ISLBUTTONDOWN() {
+        return this.isPressed['LEFT']
+    }
+
+    @method()
+    ISRBUTTONDOWN() {
+        return this.isPressed['RIGHT']
+    }
+
+    @method()
     SETPOSITION(x: number, y: number) {
         // This is kinda impossible. We would have to hide cursor and emulate it.
         throw new NotImplementedError()
@@ -148,12 +161,13 @@ export class Mouse extends Type<MouseDefinition> {
         this.handleClickEvent(event, 'release')
     }
 
-    private handleClickEvent(event: FederatedPointerEvent, type: string) {
+    private handleClickEvent(event: FederatedPointerEvent, type: 'click' | 'release') {
         if (!keysMapping.has(event.button)) {
             return
         }
 
         const key = keysMapping.get(event.button)!
+        this.isPressed[key] = type === 'click'
         const clickEvent = { type, key }
 
         this.clicksQueue.push(clickEvent)
