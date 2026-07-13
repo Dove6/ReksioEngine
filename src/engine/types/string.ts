@@ -50,6 +50,11 @@ export class String extends ValueType<StringDefinition, string> {
         return this.value.length
     }
 
+    @method()
+    CLEAR() {
+        this.value = ''
+    }
+
     protected async valueChanged(oldValue: any, newValue: any) {
         if (oldValue !== newValue) {
             await this.callbacks.run('ONCHANGED', newValue)
