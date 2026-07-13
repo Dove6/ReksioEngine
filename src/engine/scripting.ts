@@ -21,7 +21,8 @@ export class ScriptingManager {
         callback: callback,
         args?: any[],
         localScopeEntries?: Record<string, any>,
-        forwardInterrupts: boolean = false
+        forwardInterrupts: boolean = false,
+        returnValueSetter?: (value: any) => void
     ) {
         let stackFrame = null
         try {
@@ -35,7 +36,7 @@ export class ScriptingManager {
             this.engine.scopeManager.pushLocalScope(localScope)
 
             if (callback.code) {
-                return await runCode(this.engine, caller, callback.code, args ?? [], callback.isSingleStatement)
+                return await runCode(this.engine, caller, callback.code, args ?? [], callback.isSingleStatement, returnValueSetter)
             } else if (callback.behaviourReference) {
                 if (!this.engine.getObject(callback.behaviourReference, caller?.parentScope)) {
                     logger.error(`Trying to execute behaviour "${callback.behaviourReference}" that doesn't exist!`, {
