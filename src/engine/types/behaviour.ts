@@ -19,9 +19,9 @@ export class Behaviour extends Type<BehaviourDefinition> {
     }
 
     @method()
-    async RUN(...args: any[]) {
+    async RUN(...args: any[]): Promise<any> {
         try {
-            await this.executeCallback(args)
+            return await this.executeCallback(args)
         } catch (err) {
             if (!(err instanceof InterruptScriptExecution)) {
                 throw err
@@ -30,9 +30,9 @@ export class Behaviour extends Type<BehaviourDefinition> {
     }
 
     @method()
-    async RUNC(...args: any[]) {
+    async RUNC(...args: any[]): Promise<any> {
         if (await this.shouldRun()) {
-            await this.RUN(...args)
+            return await this.RUN(...args)
         }
     }
 
@@ -58,7 +58,10 @@ export class Behaviour extends Type<BehaviourDefinition> {
 
     async executeCallback(args: any[] = []) {
         // Don't resolve args, it will fail in S33_METEORY
-        return await this.engine.scripting.executeCallback(null, this, this.definition.CODE, args)
+        let returnValue
+        const setReturnValue = (value: any) => returnValue = value
+        await this.engine.scripting.executeCallback(null, this, this.definition.CODE, args, undefined, undefined, setReturnValue)
+        return returnValue
     }
 
     async executeConditionalCallback(args: any[] = []) {

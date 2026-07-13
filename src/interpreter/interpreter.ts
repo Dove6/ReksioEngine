@@ -81,9 +81,11 @@ export class Interpreter {
     private readonly context: RuntimeContext
     private readonly globalHandlers: Map<string, GlobalHandler>
     private readonly globalInstances: Map<string, Type<any>>
+    private readonly returnValueSetter?: (value: any) => void
 
-    constructor(context: RuntimeContext) {
+    constructor(context: RuntimeContext, returnValueSetter?: (value: any) => void) {
         this.context = context
+        this.returnValueSetter = returnValueSetter
         this.globalInstances = this.createGlobalInstances()
         this.globalHandlers = this.createGlobalHandlers()
     }
@@ -117,6 +119,7 @@ export class Interpreter {
             ['LOOP', this.handleLoop.bind(this)],
             ['WHILE', this.handleWhile.bind(this)],
             ['GETCURRENTSCENE', this.handleGetCurrentScene.bind(this)],
+            ['RETURN', this.handleReturn.bind(this)],
         ])
     }
 
@@ -155,7 +158,8 @@ export class Interpreter {
                 onTrue,
                 [],
                 undefined,
-                true
+                true,
+                this.returnValueSetter,
             )
         } else if (!result && onFalse) {
             await this.context.engine.scripting.executeCallback(
@@ -164,7 +168,8 @@ export class Interpreter {
                 onFalse,
                 [],
                 undefined,
-                true
+                true,
+                this.returnValueSetter,
             )
         }
     }
@@ -197,7 +202,8 @@ export class Interpreter {
                     callback,
                     [],
                     { _I_: counter },
-                    true
+                    true,
+                    this.returnValueSetter,
                 )
             } catch (err) {
                 if (err instanceof InterruptScriptExecution) {
@@ -236,7 +242,8 @@ export class Interpreter {
                     callback,
                     [],
                     undefined,
-                    true
+                    true,
+                    this.returnValueSetter,
                 )
             } catch (err) {
                 if (err instanceof InterruptScriptExecution) {
@@ -250,6 +257,17 @@ export class Interpreter {
 
     private async handleGetCurrentScene(_args: any[]): Promise<string> {
         return this.context.engine.currentScene?.name ?? ''
+    }
+
+    private async handleReturn(args: any[]) {
+        const [returnValue] = args
+        if (!this.returnValueSetter) {
+            logger.warn('Could not set return value, return value setter is missing', {
+                returnValue,
+            })
+            return
+        }
+        this.returnValueSetter(returnValue)
     }
 
     private async evaluateLogicExpression(expr: ConditionExpr): Promise<boolean> {
@@ -464,13 +482,14 @@ export async function runCode(
     caller: Type<any> | null,
     script: string,
     args: any[],
-    isSingleStatement: boolean
+    isSingleStatement: boolean,
+    returnValueSetter?: (value: any) => void
 ): Promise<any> {
     const processedScript = await substituteArguments(script, args)
     const ast = parseCode(processedScript)
 
     const context = new RuntimeContext(engine, caller, processedScript)
-    const interpreter = new Interpreter(context)
+    const interpreter = new Interpreter(context, returnValueSetter)
 
     try {
         return isSingleStatement ? await interpreter.executeStatement(ast[0]) : await interpreter.execute(ast)
