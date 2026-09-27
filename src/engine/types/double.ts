@@ -82,9 +82,8 @@ export class Double extends ValueType<DoubleDefinition, number> {
     }
 
     @method()
-    CLAMP(min: number, max: number) {
-        this.value = Math.max(Math.min(this.value, max), min)
-        return this.value
+    async CLAMP(min: number, max: number) {
+        return await this.setValue(Math.max(Math.min(this.value, max), min))
     }
 
     @method()
@@ -93,8 +92,7 @@ export class Double extends ValueType<DoubleDefinition, number> {
     }
 
     @method()
-    POWER(power: number) {
-        this.value = Math.pow(this.value, power)
-        return this.value
+    async POWER(power: number) {
+        return await this.setValue(Math.pow(this.value, power))
     }
 }

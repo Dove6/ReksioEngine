@@ -41,8 +41,8 @@ export class String extends ValueType<StringDefinition, string> {
     }
 
     @method()
-    REPLACE(needle: string, value: string) {
-        this.value = this.value.replaceAll(needle, value)
+    async REPLACE(needle: string, value: string) {
+        await this.setValue(this.value.replaceAll(needle, value))
     }
 
     @method()
@@ -51,8 +51,8 @@ export class String extends ValueType<StringDefinition, string> {
     }
 
     @method()
-    CLEAR() {
-        this.value = ''
+    async CLEAR() {
+        await this.setValue('')
     }
 
     protected async valueChanged(oldValue: any, newValue: any) {
