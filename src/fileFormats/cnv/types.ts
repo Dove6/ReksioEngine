@@ -517,7 +517,7 @@ const TextDefinitionStructure = {
 
 export type TimerDefinition = TypeDefinition & {
     ENABLED?: boolean
-    ELAPSE: number | reference
+    ELAPSE: number
     TICKS?: number
     ONINIT?: callback
     ONTICK?: callbacks<number>
@@ -525,17 +525,7 @@ export type TimerDefinition = TypeDefinition & {
 
 const TimerStructure = {
     ENABLED: optional(boolean),
-    ELAPSE: {
-        name: 'elapse',
-        processor: (object: any, key: string, param: string, value: string) => {
-            const result = Number(value.startsWith('"') ? value.slice(1, -1) : value)
-            if (!isNaN(result)) {
-                return result
-            } else {
-                return reference.processor(object, key, param, value)
-            }
-        },
-    },
+    ELAPSE: number,
     TICKS: optional(number),
     ONINIT: optional(callback),
     ONTICK: optional(callbacks(number)),

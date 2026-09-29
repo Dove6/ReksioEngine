@@ -1,8 +1,7 @@
-import { ParentType, Type, ValueType } from './index'
+import { ParentType, Type } from './index'
 import { TimerDefinition } from '../../fileFormats/cnv/types'
 import { Engine } from '../index'
 import { method } from '../../common/types'
-import { assert } from '../../common/errors'
 
 export class Timer extends Type<TimerDefinition> {
     private currentTick: number = 0
@@ -13,17 +12,8 @@ export class Timer extends Type<TimerDefinition> {
 
     constructor(engine: Engine, parent: ParentType<any> | null, definition: TimerDefinition) {
         super(engine, parent, definition)
-    }
-
-    async applyDefaults() {
-        if (typeof(this.definition.ELAPSE) === 'number') {
-            this.elapse = this.definition.ELAPSE
-        } else {
-            const object: ValueType<any, any> | null = this.getObject(this.definition.ELAPSE)
-            assert(object !== null, 'object referred by ELAPSE should exist')
-            this.elapse = Number(await object.getValue())
-        }
-        this.enabled = this.definition.ENABLED ?? true
+        this.elapse = definition.ELAPSE
+        this.enabled = definition.ENABLED ?? true
     }
 
     async ready() {
@@ -57,12 +47,18 @@ export class Timer extends Type<TimerDefinition> {
             this.collectedTime -= this.elapse
             this.currentTick++
 
-            if (ticksLimit > 0 && this.currentTick >= ticksLimit) {
+            const shouldExitLoop = ticksLimit > 0 && this.currentTick >= ticksLimit
+            if (shouldExitLoop) {
                 this.DISABLE()
                 this.collectedTime = 0
             }
 
+            // after tick-limit-caused DISABLE because it can be re-enabled in ONTICK
             await this.callbacks.run('ONTICK', this.currentTick)
+
+            if (shouldExitLoop) {
+                break
+            }
         }
     }
 
