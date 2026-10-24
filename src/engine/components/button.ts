@@ -47,6 +47,7 @@ export class ButtonLogicComponent {
             t(State.INIT, Event.ENABLE, State.STANDARD),
 
             t(State.STANDARD, Event.OVER, State.HOVERED),
+            t(State.STANDARD, Event.DOWN, State.PRESSED),
             t(State.STANDARD, Event.DISABLE, State.DISABLED),
             t(State.STANDARD, Event.DISABLE_BUT_VISIBLE, State.DISABLED_BUT_VISIBLE),
 
