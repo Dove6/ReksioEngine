@@ -1,6 +1,7 @@
 import { Iso9660Reader, LocalIso9660Reader, RemoteIso9660Reader } from './iso9660'
 import { normalizePath } from './index'
 import { logger } from '../engine/logging'
+import { BUILD_VARS } from '..'
 
 export class FileNotFoundError extends Error {
     constructor(filename: string) {
@@ -65,6 +66,12 @@ export class GithubFileLoader extends UrlFileLoader {
     protected async fetchFilesListing() {
         const response = await fetch(this.filesListUrl)
         const data = await response.json()
+        if (BUILD_VARS.debug) {
+            const fetchId = crypto.randomUUID()
+            return new Map<string, string>(
+                data.tree.map((entry: any) => [entry.path.toLowerCase(), this.filesBaseUrl + entry.path + '?nocache=' + fetchId])
+            )
+        }
         return new Map<string, string>(
             data.tree.map((entry: any) => [entry.path.toLowerCase(), this.filesBaseUrl + entry.path])
         )
