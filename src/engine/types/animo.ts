@@ -618,6 +618,11 @@ export class Animo extends DisplayType<AnimoDefinition> {
     }
 
     @method()
+    GETFPS(): number {
+        return this.fps
+    }
+
+    @method()
     GETPOSITIONX(): number {
         assert(this.sprite !== null)
         return this.sprite.getGlobalPosition().x
