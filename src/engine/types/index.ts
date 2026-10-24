@@ -220,6 +220,10 @@ export class ValueType<DefinitionType extends ValueTypeDefinition, TypeOfValue> 
         return null
     }
 
+    async ready() {
+        await this.callbacks.run('ONINIT')
+    }
+
     protected saveToINI() {
         this.engine.saveFile.saveValue(this, this.serialize())
     }
