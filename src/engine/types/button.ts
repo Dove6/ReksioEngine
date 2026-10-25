@@ -24,6 +24,9 @@ export class Button extends Type<ButtonDefinition> {
     private gfxOnClick: Image | Animo | null = null
     private gfxOnMove: Image | Animo | null = null
 
+    static get interactAreaPriorityConstant() {
+        return 9999
+    }
     private interactArea: Graphics | null = null
     private rect: Rectangle | null = null
 
@@ -37,12 +40,21 @@ export class Button extends Type<ButtonDefinition> {
     init() {
         if (this.definition.GFXSTANDARD) {
             this.gfxStandard = this.getObject(this.definition.GFXSTANDARD)
+            if (this.definition.PRIORITY) {
+                this.gfxStandard?.SETPRIORITY(this.definition.PRIORITY)
+            }
         }
         if (this.definition.GFXONCLICK) {
             this.gfxOnClick = this.getObject(this.definition.GFXONCLICK)
+            if (this.definition.PRIORITY) {
+                this.gfxOnClick?.SETPRIORITY(this.definition.PRIORITY)
+            }
         }
         if (this.definition.GFXONMOVE) {
             this.gfxOnMove = this.getObject(this.definition.GFXONMOVE)
+            if (this.definition.PRIORITY) {
+                this.gfxOnMove?.SETPRIORITY(this.definition.PRIORITY)
+            }
         }
     }
 
@@ -118,7 +130,9 @@ export class Button extends Type<ButtonDefinition> {
 
         this.rect = rectangle
         this.interactArea.hitArea = rectangle
-        this.interactArea.zIndex = 9999999 - rectangle.top
+        this.interactArea.zIndex = this.definition.PRIORITY ?? (this.engine.app.screen.height - rectangle.top) + Button.interactAreaPriorityConstant
+        this.engine.rendering.putAtZindex(this.interactArea, this.interactArea.zIndex)
+        this.engine.rendering.sortObjects()
     }
 
     destroy() {
@@ -323,6 +337,10 @@ export class Button extends Type<ButtonDefinition> {
         // Add object to stage if it had TOCANVAS=FALSE, and wasn't added
         if (renderObject.parent === null) {
             this.engine.rendering.addToStage(renderObject)
+            const priority = this.definition.PRIORITY ?? renderObject.zIndex
+            renderObject.zIndex = priority
+            this.engine.rendering.putAtZindex(renderObject, priority)
+            this.engine.rendering.sortObjects()
         }
     }
 

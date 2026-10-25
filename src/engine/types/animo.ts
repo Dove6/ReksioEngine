@@ -13,6 +13,7 @@ import { method } from '../../common/types'
 import { CollisionsComponent } from '../components/collisions'
 import { Sound } from '../audio'
 import { logger } from '../logging'
+import { Button } from './button'
 
 export class Animo extends DisplayType<AnimoDefinition> {
     private buttonLogic: ButtonLogicComponent
@@ -552,7 +553,9 @@ export class Animo extends DisplayType<AnimoDefinition> {
 
             this.buttonInteractArea.name = `${this.name} (ANIMO Button)` // For PIXI Devtools
             this.buttonInteractArea.hitArea = this.sprite.getBounds()
-            this.buttonInteractArea.zIndex = this.sprite.zIndex
+            this.buttonInteractArea.zIndex = this.sprite.zIndex + Button.interactAreaPriorityConstant
+            this.engine.rendering.putAtZindex(this.buttonInteractArea, this.buttonInteractArea.zIndex)
+            this.engine.rendering.sortObjects()
 
             await this.buttonLogic.enable()
             await this.playEvent('ONNOEVENT')
@@ -599,7 +602,6 @@ export class Animo extends DisplayType<AnimoDefinition> {
                 break
             case State.PRESSED:
                 await playEventIfExists('ONCLICK')
-                await this.callbacks.run('ONCLICKED')
                 await this.callbacks.run('ONCLICK')
                 break
         }

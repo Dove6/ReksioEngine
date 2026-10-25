@@ -100,19 +100,35 @@ export class RenderingManager {
 
     removeFromStage(sprite: DisplayObject) {
         this.app.stage.removeChild(sprite)
+        this.removeFromZindex(sprite)
         this.sortObjects()
     }
 
+    private removeFromZindex(sprite: DisplayObject) {
+        this.sameZIndexUpdateOrder.forEach(objectsAtZindex => {
+            for (let i = objectsAtZindex.length - 1; i >= 0; i--) {
+                if (objectsAtZindex[i] === sprite) {
+                    objectsAtZindex.splice(i, 1)
+                }
+            }
+        })
+    }
+
     putAtZindex(sprite: DisplayObject, zIndex: number) {
+        this.sameZIndexUpdateOrder.forEach(objectsAtZindex => {
+            for (let i = objectsAtZindex.length - 1; i >= 0; i--) {
+                if (objectsAtZindex[i] === sprite) {
+                    objectsAtZindex.splice(i, 1)
+                }
+            }
+        })
+
         let objects = this.sameZIndexUpdateOrder.get(zIndex)
         if (!objects) {
             objects = []
             this.sameZIndexUpdateOrder.set(zIndex, objects)
         }
-
-        objects = objects.filter((obj) => obj != sprite)
-        objects.push(sprite)
-        this.sameZIndexUpdateOrder.set(zIndex, objects)
+        this.sameZIndexUpdateOrder.get(zIndex)?.push(sprite)
     }
 
     sortObjects() {
