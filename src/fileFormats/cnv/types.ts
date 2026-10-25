@@ -57,22 +57,22 @@ const AnimoStructure = {
 }
 
 export type ApplicationDefinition = TypeDefinition & {
-    DESCRIPTION: string
-    CREATIONTIME: string
-    LASTMODIFYTIME: string
-    AUTHOR: string
-    VERSION: string
+    DESCRIPTION?: string
+    CREATIONTIME?: string
+    LASTMODIFYTIME?: string
+    AUTHOR?: string
+    VERSION?: string
     PATH: string
     EPISODES: Array<string>
     STARTWITH: string
 }
 
 const ApplicationStructure = {
-    DESCRIPTION: string,
-    CREATIONTIME: string,
-    LASTMODIFYTIME: string,
-    AUTHOR: string,
-    VERSION: string,
+    DESCRIPTION: optional(string),
+    CREATIONTIME: optional(string),
+    LASTMODIFYTIME: optional(string),
+    AUTHOR: optional(string),
+    VERSION: optional(string),
     PATH: string,
     EPISODES: array(string),
     STARTWITH: string,
@@ -119,6 +119,7 @@ export type ButtonDefinition = TypeDefinition & {
     GFXSTANDARD?: reference
     GFXONCLICK?: reference
     GFXONMOVE?: reference
+    PRIORITY?: number
     RECT?: Array<number> | reference
     SNDONMOVE?: reference
     ONACTION?: callback
@@ -140,6 +141,7 @@ const ButtonDefinitionStructure = {
     GFXONCLICK: optional(reference),
     GFXONMOVE: optional(reference),
     SNDONMOVE: optional(reference),
+    PRIORITY: optional(number),
     RECT: optional({
         name: 'rect',
         processor: (object: any, key: string, param: string, value: string) => {
@@ -235,22 +237,22 @@ const DoubleStructure = {
 }
 
 export type EpisodeDefinition = TypeDefinition & {
-    DESCRIPTION: string
-    CREATIONTIME: string
-    LASTMODIFYTIME: string
-    AUTHOR: string
-    VERSION: string
+    DESCRIPTION?: string
+    CREATIONTIME?: string
+    LASTMODIFYTIME?: string
+    AUTHOR?: string
+    VERSION?: string
     PATH?: string
     SCENES: Array<string>
     STARTWITH: string
 }
 
 const EpisodeStructure = {
-    DESCRIPTION: string,
-    CREATIONTIME: string,
-    LASTMODIFYTIME: string,
-    AUTHOR: string,
-    VERSION: string,
+    DESCRIPTION: optional(string),
+    CREATIONTIME: optional(string),
+    LASTMODIFYTIME: optional(string),
+    AUTHOR: optional(string),
+    VERSION: optional(string),
     PATH: optional(string),
     SCENES: array(string),
     STARTWITH: string,
@@ -397,9 +399,9 @@ const RandDefinitionStructure = {}
 
 export type SceneDefinition = TypeDefinition & {
     DESCRIPTION?: string
-    CREATIONTIME: string
-    LASTMODIFYTIME: string
-    VERSION: string
+    CREATIONTIME?: string
+    LASTMODIFYTIME?: string
+    VERSION?: string
     PATH: string
     BACKGROUND?: string
     MUSIC?: string
@@ -408,9 +410,9 @@ export type SceneDefinition = TypeDefinition & {
 
 const SceneStructure = {
     DESCRIPTION: optional(string),
-    CREATIONTIME: string,
-    LASTMODIFYTIME: string,
-    VERSION: string,
+    CREATIONTIME: optional(string),
+    LASTMODIFYTIME: optional(string),
+    VERSION: optional(string),
     PATH: string,
     BACKGROUND: optional(string),
     MUSIC: optional(string),
@@ -504,11 +506,12 @@ export type TextDefinition = TypeDefinition & {
 
 const TextDefinitionStructure = {
     VISIBLE: boolean,
-    VJUSTIFY: optional(boolean),
+    HJUSTIFY: optional(string),
+    VJUSTIFY: optional(string),
     TOCANVAS: boolean,
     TEXT: optional(string),
     RECT: array(number),
-    PRIORITY: number,
+    PRIORITY: optional(number),
     MONITORCOLLISIONALPHA: boolean,
     MONITORCOLLISION: boolean,
     FONT: string,
