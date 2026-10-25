@@ -130,7 +130,7 @@ export class Button extends Type<ButtonDefinition> {
 
         this.rect = rectangle
         this.interactArea.hitArea = rectangle
-        this.interactArea.zIndex = this.definition.PRIORITY ?? (this.engine.app.screen.height - rectangle.top) + Button.interactAreaPriorityConstant
+        this.interactArea.zIndex = (this.definition.PRIORITY ?? (this.engine.app.screen.height - rectangle.top)) + Button.interactAreaPriorityConstant
         this.engine.rendering.putAtZindex(this.interactArea, this.interactArea.zIndex)
         this.engine.rendering.sortObjects()
     }
