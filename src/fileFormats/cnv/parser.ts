@@ -14,6 +14,11 @@ const splitOnce = (text: string, separator: string) => {
     return [text.substring(0, index), text.substring(index + 1)]
 }
 
+const createPattern = (name: string) => {
+    const regexName = name.replaceAll('%s', '([a-zA-Z]+)').replaceAll('%d', '([0-9]+)')
+    return new RegExp(`^${regexName}$`, 'g')
+}
+
 export const parseCNV = (content: string) => {
     const lines = content.split('\n')
     for (let i = 0; i < lines.length; i++) {
@@ -72,9 +77,7 @@ export const parseCNV = (content: string) => {
                     }
                 }
 
-                const regexName = name.replaceAll('%s', '([a-zA-Z]+)').replaceAll('%d', '([0-9]+)')
-
-                const pattern = new RegExp(`^${regexName}$`, 'g')
+                const pattern = createPattern(name)
                 return {
                     pattern,
                     name,
@@ -162,8 +165,17 @@ export const parseCNV = (content: string) => {
         for (const field in typeDefinition) {
             const typeInfo: FieldTypeEntry = typeDefinition[field]
 
-            if (!(field in object) && !typeInfo?.flags?.optional) {
-                logger.warn(`Field '${field}' in type ${object.TYPE} is missing but is not optional`, {
+            if (!field.includes('%')) {
+                if (!(field in object) && !typeInfo?.flags?.optional) {
+                    logger.warn(`Field '${field}' in type ${object.TYPE} is missing but is not optional`, {
+                        object,
+                    })
+                }
+                continue
+            }
+            const pattern = createPattern(field)
+            if (!Object.keys(object).some(key => pattern.test(key)) && !typeInfo?.flags?.optional) {
+                logger.warn(`Field matching '${pattern}' in type ${object.TYPE} is missing but is not optional`, {
                     object,
                 })
             }

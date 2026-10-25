@@ -276,7 +276,7 @@ const FilterDefinitionStructure = {
     ACTION: string,
 }
 
-export type FontDefinitionDef = `DEF_${string}_${number}_${number}`
+export type FontDefinitionDef = `DEF_${string}_${string}_${number}`
 export type FontDefinition = TypeDefinition & {
     ONINIT?: callback
 } & Record<FontDefinitionDef, string>
