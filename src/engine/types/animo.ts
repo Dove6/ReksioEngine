@@ -355,13 +355,16 @@ export class Animo extends DisplayType<AnimoDefinition> {
     }
 
     @method()
-    async PLAY(name?: string) {
+    async PLAY(name?: string | number) {
         if (name === undefined) {
             this.SHOW()
             this.RESUME()
             return
         }
 
+        if (typeof(name) === 'number') {
+            name = Math.trunc(name).toString()
+        }
         await this.playEvent(name)
     }
 
