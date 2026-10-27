@@ -80,8 +80,3 @@ if (urlParams.get('loader') === 'iso-local') {
     gameContainer!.classList.add('notready')
     gameContainer!.addEventListener('click', start)
 }
-
-const enterFullscreen = document.querySelector('#enterFullscreen')!
-enterFullscreen.addEventListener('click', async () => {
-    await gameContainer!.requestFullscreen()
-})

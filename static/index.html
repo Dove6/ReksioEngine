@@ -10,14 +10,13 @@
                 margin: 0;
             }
 
-            .notready {
-                aspect-ratio: 800 / 600;
-                width: 100%;
-                max-width: 800px;
-                background-color: #000;
+            #game {
+                width: 100vw;
+                height: 100vh;
                 display: flex;
-                align-items: center;
                 justify-content: center;
+                align-items: center;
+                background-color: #000;
                 color: #fff;
             }
 
@@ -27,15 +26,15 @@
                 font-size: 24px;
             }
 
-            #game:fullscreen {
-                display: flex;
-                justify-content: center;
+            #game > canvas {
+                aspect-ratio: 4/3;
+                width: 100vw;
             }
 
-            #game > canvas {
-                aspect-ratio: 800 / 600;
-                width: 100%;
-                max-width: 800px;
+            @media (min-aspect-ratio: 4/3) {
+                #game > canvas {
+                    width: calc(100vh * 4 / 3);
+                }
             }
         </style>
     </head>
