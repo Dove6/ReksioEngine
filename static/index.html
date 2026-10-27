@@ -11,8 +11,9 @@
             }
 
             .notready {
-                width: 800px;
-                height: 600px;
+                aspect-ratio: 800 / 600;
+                width: 100%;
+                max-width: 800px;
                 background-color: #000;
                 display: flex;
                 align-items: center;
@@ -31,26 +32,14 @@
                 justify-content: center;
             }
 
-            #controls {
-                position: absolute;
-                top: 550px;
-                left: 0;
-                padding: 10px;
-                opacity: 0.8;
-            }
-
-            #enterFullscreen {
-                width: 30px;
-                height: 30px;
-                background-image: url('https://itch.io/static/images/enlarge.svg?1753402899');
-                background-size: contain;
+            #game > canvas {
+                aspect-ratio: 800 / 600;
+                width: 100%;
+                max-width: 800px;
             }
         </style>
     </head>
     <body>
         <div id="game"></div>
-        <div id="controls">
-            <button title="Enter fullscreen" id="enterFullscreen"></button>
-        </div>
     </body>
 </html>
