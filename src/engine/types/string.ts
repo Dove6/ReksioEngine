@@ -28,7 +28,7 @@ export class String extends ValueType<StringDefinition, string> {
     }
 
     @method()
-    GET(index?: number, length: number = 1) {
+    async GET(index?: number, length: number = 1): Promise<string> {
         if (index === undefined) {
             return this.value
         }
@@ -53,12 +53,5 @@ export class String extends ValueType<StringDefinition, string> {
     @method()
     async CLEAR() {
         await this.setValue('')
-    }
-
-    protected async valueChanged(oldValue: any, newValue: any) {
-        if (oldValue !== newValue) {
-            await this.callbacks.run('ONCHANGED', newValue)
-        }
-        await this.callbacks.run('ONBRUTALCHANGED', newValue)
     }
 }

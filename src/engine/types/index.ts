@@ -210,7 +210,12 @@ export class ValueType<DefinitionType extends ValueTypeDefinition, TypeOfValue> 
         return newValue
     }
 
-    protected async valueChanged(oldValue: any, newValue: any) {}
+    protected async valueChanged(oldValue: any, newValue: any) {
+        if (oldValue !== newValue) {
+            await this.callbacks.run('ONCHANGED', newValue)
+        }
+        await this.callbacks.run('ONBRUTALCHANGED', newValue)
+    }
 
     protected getFromINI() {
         const loadedValue = this.engine.saveFile.loadValue(this)

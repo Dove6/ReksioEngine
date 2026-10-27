@@ -15,19 +15,12 @@ export class Bool extends ValueType<BoolDefinition, boolean> {
     }
 
     @method()
-    GET(): boolean {
+    async GET(): Promise<boolean> {
         return this.value
     }
 
     @method()
     async SET(newValue: boolean) {
         await this.setValue(newValue)
-    }
-
-    protected async valueChanged(oldValue: any, newValue: any) {
-        if (oldValue !== newValue) {
-            await this.callbacks.run('ONCHANGED', newValue)
-        }
-        await this.callbacks.run('ONBRUTALCHANGED', newValue)
     }
 }

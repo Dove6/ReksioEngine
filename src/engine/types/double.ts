@@ -77,7 +77,7 @@ export class Double extends ValueType<DoubleDefinition, number> {
     }
 
     @method()
-    GET() {
+    async GET(): Promise<number> {
         return this.value
     }
 

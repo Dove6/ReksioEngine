@@ -97,13 +97,6 @@ export class Integer extends ValueType<IntegerDefinition, number> {
         return Math.floor(Math.random() * range) + offset
     }
 
-    protected async valueChanged(oldValue: any, newValue: any) {
-        if (oldValue !== newValue) {
-            await this.callbacks.run('ONCHANGED', newValue)
-        }
-        await this.callbacks.run('ONBRUTALCHANGED', newValue)
-    }
-
     async getValue() {
         return super.getValue()
     }
