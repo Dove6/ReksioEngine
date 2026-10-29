@@ -187,7 +187,7 @@ export class Engine {
                     )
             )
             if (leakedObjects.length > 0) {
-                logger.error('Display objects leak detected', {
+                logger.debug('Display objects leak detected', {
                     leakedObjects,
                 })
             }
