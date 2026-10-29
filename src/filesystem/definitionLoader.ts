@@ -126,6 +126,9 @@ const createTypeInstance = (engine: Engine, parent: ParentType<any> | null, defi
 }
 
 const initializationPriorities = [
+    ['APPLICATION'],
+    ['EPISODE'],
+    ['SCENE'],
     ['BEHAVIOUR'],
     ['INTEGER', 'STRING', 'BOOL', 'DOUBLE'],
     ['ARRAY', 'CONDITION'],
