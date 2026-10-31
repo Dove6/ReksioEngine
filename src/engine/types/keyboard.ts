@@ -1,5 +1,5 @@
 import { ParentType, Type } from './index'
-import { KeyboardDefinition, MusicDefinition } from '../../fileFormats/cnv/types'
+import { KeyboardDefinition } from '../../fileFormats/cnv/types'
 import { Engine } from '../index'
 import { method } from '../../common/types'
 import { logger } from '../logging'

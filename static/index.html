@@ -1,44 +1,303 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
         <title>[PRGJ 2025] Chicken Evaders - Powered by ReksioEngine</title>
         <link rel="icon" type="image/png" href="./favicon.png" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
         <style>
             body {
                 padding: 0;
                 margin: 0;
             }
 
-            #game {
+            #page {
                 width: 100vw;
                 height: 100vh;
                 display: flex;
+                flex-direction: column;
                 justify-content: center;
                 align-items: center;
                 background-color: #000;
                 color: #fff;
             }
 
+            #game {
+                aspect-ratio: 4/3;
+                width: 100vw;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
             .notready:before {
                 content: 'Click to begin';
                 font-family: sans-serif;
-                font-size: 24px;
+                font-size: 4vw;
             }
 
             #game > canvas {
-                aspect-ratio: 4/3;
-                width: 100vw;
+                width: 100%;
+            }
+
+            .keyboard-vertical-left, .keyboard-vertical-right, .keyboard-horizontal-top, .keyboard-horizontal-bottom {
+                display: none;
+                color: black;
+                width: unset;
+                height: unset;
+                margin: 10px;
+            }
+
+            .hg-button {
+                flex-grow: unset;
+                min-width: 10vw;
+                width: 10vw;
+                min-height: 10vw;
+                height: 10vw;
+                font-size: 4vw;
+            }
+
+            .software-cursor {
+                display: none;
+                position: absolute;
+            }
+
+            #software-cursors {
+                position: absolute;
+                pointer-events: none;
+            }
+
+            #software-cursors > img {
+                display: none;
+                position: relative;
             }
 
             @media (min-aspect-ratio: 4/3) {
-                #game > canvas {
+                #page {
+                    flex-direction: row;
+                }
+
+                #game {
                     width: calc(100vh * 4 / 3);
+                }
+
+                .notready:before {
+                    font-size: 4vh;
+                }
+
+                .hg-button {
+                    min-width: 10vh;
+                    width: 10vh;
+                    min-height: 10vh;
+                    height: 10vh;
+                    font-size: 4vh;
+                }
+            }
+
+            @media (hover: none) {
+                #software-cursors[data-cursor="default"] > .software-cursor-default {
+                    display: block;
+                }
+
+                #software-cursors[data-cursor="pointer"] > .software-cursor-pointer {
+                    display: block;
+                }
+
+                .keyboard-horizontal-top, .keyboard-horizontal-bottom {
+                    display: block;
+                }
+
+                @media (min-aspect-ratio: 4/3) {
+                    .keyboard-vertical-left, .keyboard-vertical-right {
+                        display: block;
+                    }
+
+                    .keyboard-horizontal-top, .keyboard-horizontal-bottom {
+                        display: none;
+                    }
                 }
             }
         </style>
     </head>
     <body>
-        <div id="game"></div>
+        <div id="page">
+            <div class="keyboard-vertical-left"></div>
+            <div class="keyboard-horizontal-top"></div>
+            <div id="game"></div>
+            <div class="keyboard-vertical-right"></div>
+            <div class="keyboard-horizontal-bottom"></div>
+        </div>
+        <div id="software-cursors">
+            <img class="software-cursor-default" src="cursor-default.png" />
+            <img class="software-cursor-pointer" src="cursor-pointer.png" />
+        </div>
     </body>
+	<script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.js"></script>
+    <script>
+        const Keyboard = window.SimpleKeyboard.default;
+        const keyboardDisplay = {
+            "{mouse}": "🖱️",
+            "{enter}": "Ent↵",
+            "{expand_v}": "︾",
+            "{expand_h}": "》",
+            "{compact_v}": "︽",
+            "{compact_h}": "《",
+        };
+        const createKeyboard = (className, defaultLayout, fullLayout) => new Keyboard(className, {
+            onKeyPress: button => onKeyPress(button),
+            onKeyReleased: button => onKeyReleased(button),
+            mergeDisplay: true,
+            layoutName: "default",
+            layout: {
+                default: defaultLayout,
+                full: fullLayout,
+            },
+            display: keyboardDisplay,
+        });
+        const cursorTracking = {
+            enabled: false,
+            parent: document.getElementById('software-cursors'),
+            cursor: 'default',
+            clientCoords: [0, 0],
+        };
+
+        const keyboards = [
+            createKeyboard("keyboard-vertical-left", [
+                "Q",
+                "{expand_v}"
+            ], [
+                "Q",
+                "1",
+                "2",
+                "3",
+                "4",
+                "5",
+                "X",
+                "{compact_v}"
+            ]),
+            createKeyboard("keyboard-vertical-right", [
+                "{mouse}",
+                "{expand_v}"
+            ], [
+                "{mouse}",
+                "6",
+                "7",
+                "8",
+                "9",
+                "0",
+                "{enter}",
+                "{compact_v}"
+            ]),
+            createKeyboard("keyboard-horizontal-top", [
+                "Q {expand_h}",
+            ], [
+                "Q 1 2 3 4 5 X {compact_h}"
+            ]),
+            createKeyboard("keyboard-horizontal-bottom", [
+                "{mouse} {expand_h}",
+            ], [
+                "{mouse} 6 7 8 9 0 {enter} {compact_h}",
+            ]),
+        ];
+
+        console.log(keyboards);
+
+        function onKeyPress(button) {
+            console.log("Button pressed", button);
+
+            switch (button) {
+                case "{expand_v}":
+                case "{expand_h}":
+                case "{compact_v}":
+                case "{compact_h}":
+                case "{mouse}": {
+                    break;
+                }
+                case "{enter}": {
+                    handleKeyEvent('keydown', 'enter');
+                    break;
+                }
+                default: {
+                    handleKeyEvent('keydown', button);
+                    break;
+                }
+            }
+        }
+
+        function onKeyReleased(button) {
+            console.log("Button released", button);
+
+            switch (button) {
+                case "{expand_v}":
+                case "{expand_h}": {
+                    for (const keyboard of keyboards) {
+                        keyboard.setOptions({
+                            layoutName: "full"
+                        });
+                    }
+                    break;
+                }
+                case "{compact_v}":
+                case "{compact_h}": {
+                    for (const keyboard of keyboards) {
+                        keyboard.setOptions({
+                            layoutName: "default"
+                        });
+                    }
+                    break;
+                }
+                case "{mouse}": {
+                    cursorTracking.enabled = !cursorTracking.enabled;
+                    if (cursorTracking.enabled) {
+                        cursorTracking.parent.dataset.cursor = cursorTracking.cursor;
+                        cursorTracking.parent.style.left = cursorTracking.clientCoords[0] + 'px';
+                        cursorTracking.parent.style.top = cursorTracking.clientCoords[1] + 'px';
+                    } else {
+                        cursorTracking.parent.dataset.cursor = undefined;
+                    }
+                    break;
+                }
+                case "{enter}": {
+                    handleKeyEvent('keyup', 'enter');
+                    break;
+                }
+                default: {
+                    handleKeyEvent('keyup', button);
+                    break;
+                }
+            }
+        }
+
+        function handleKeyEvent(type, button) {
+            if (button.toLowerCase() === 'enter') {
+                document.dispatchEvent(new KeyboardEvent(type, { bubbles: true, code: "Enter", key: "Enter", keyCode: 13 }));
+            } else if (/^[0-9]$/.test(button)) {
+                document.dispatchEvent(new KeyboardEvent(type, { bubbles: true, code: `Digit${button}`, key: button, keyCode: 48 + Number(button) }));
+            } else if (/^[a-z]$/i.test(button)) {
+                document.dispatchEvent(new KeyboardEvent(type, { bubbles: true, code: `Key${button.toUpperCase()}`, key: button, keyCode: button.toUpperCase().charCodeAt(0) }));
+            } else {
+                throw new Error('Unsupported button');
+            }
+        }
+
+        document.addEventListener('pointermove', evt => {
+            if (!cursorTracking.enabled) {
+                return;
+            }
+            cursorTracking.clientCoords = [evt.clientX.toFixed(0) - 10, evt.clientY.toFixed(0) - 10];
+            cursorTracking.parent.style.left = cursorTracking.clientCoords[0] + 'px';
+            cursorTracking.parent.style.top = cursorTracking.clientCoords[1] + 'px';
+            let newCursor = 'default';
+            try {
+                const computedCursor = getComputedStyle(evt.target).cursor;
+                newCursor = computedCursor === 'pointer' ? computedCursor : 'default';
+            } catch {
+                return;
+            }
+            if (cursorTracking.cursor !== newCursor) {
+                cursorTracking.cursor = newCursor;
+                cursorTracking.parent.dataset.cursor = newCursor;
+            }
+        }, false);
+    </script>
 </html>
