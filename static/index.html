@@ -94,7 +94,7 @@
                 }
             }
 
-            @media (hover: none) {
+            @media (hover: none) or (pointer: coarse) {
                 #software-cursors[data-cursor="default"] > .software-cursor-default {
                     display: block;
                 }
@@ -287,10 +287,15 @@
             cursorTracking.clientCoords = [evt.clientX.toFixed(0) - 10, evt.clientY.toFixed(0) - 10];
             cursorTracking.parent.style.left = cursorTracking.clientCoords[0] + 'px';
             cursorTracking.parent.style.top = cursorTracking.clientCoords[1] + 'px';
-            let newCursor = 'default';
+            let newCursor = 'none';
             try {
-                const computedCursor = getComputedStyle(evt.target).cursor;
-                newCursor = computedCursor === 'pointer' ? computedCursor : 'default';
+                const worldCoords = engine.app.renderer.events.pointer.global;
+                const worldBounds = engine.app.screen;
+                if (worldBounds.left <= worldCoords.x && worldCoords.x < worldBounds.right && worldBounds.top <= worldCoords.y && worldCoords.y < worldBounds.bottom) {
+                    const containingSprite = engine.app.stage.children.filter(sprite => (sprite.eventMode === 'static' || sprite.eventMode === 'dynamic') && sprite.hitArea)
+                        .find(sprite => sprite.hitArea.left <= worldCoords.x && worldCoords.x < sprite.hitArea.right && sprite.hitArea.top <= worldCoords.y && worldCoords.y < sprite.hitArea.bottom);
+                    newCursor = containingSprite?.cursor === 'pointer' ? 'pointer' : 'default';
+                }
             } catch {
                 return;
             }
