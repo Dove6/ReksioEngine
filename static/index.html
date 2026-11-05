@@ -200,10 +200,8 @@
             ]),
         ];
 
-        console.log(keyboards);
-
         function onKeyPress(button) {
-            console.log("Button pressed", button);
+            console.debug("Virtual button pressed", button);
 
             switch (button) {
                 case "{expand_v}":
@@ -225,7 +223,7 @@
         }
 
         function onKeyReleased(button) {
-            console.log("Button released", button);
+            console.debug("Virtual button released", button);
 
             switch (button) {
                 case "{expand_v}":
