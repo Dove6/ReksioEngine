@@ -144,7 +144,7 @@ export class Image extends DisplayType<ImageDefinition> {
 
     @method()
     INVALIDATE() {
-        throw new NotImplementedError()
+        // TODO
     }
 
     @method()

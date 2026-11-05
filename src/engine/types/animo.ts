@@ -772,6 +772,11 @@ export class Animo extends DisplayType<AnimoDefinition> {
     }
 
     @method()
+    INVALIDATE() {
+        // TODO
+    }
+
+    @method()
     async LOAD(path: string) {
         this.destroy()
         this.annFile = await this.loadAnimation(path)
